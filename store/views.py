@@ -50,3 +50,9 @@ def user_login(request):
         else:
             messages.error(request, 'Wrong credentials.')
     return render(request, 'store/login.html')
+
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'You Have Been Logged Out.')
+    return redirect('home')
