@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import User
+from .models import User, Product
 from .forms import RegistrationForm
 
 # Create your views here.
 
 
 def home(request):
+    products = Product.objects.all()
+
+    context = {'products': products}
     return render(request, 'store/home.html')
 
 

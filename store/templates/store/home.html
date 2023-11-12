@@ -5,7 +5,7 @@
 {% block content %}
 
  {% if user.is_authenticated %}
-    <h2>Access  Granted</h2>
+    {% include 'store/includes/products_component.html' %}
 
  {% endif %}
 
