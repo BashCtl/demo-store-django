@@ -3,15 +3,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import User, Product
 from .forms import RegistrationForm
+import numpy as np
 
 # Create your views here.
 
 
 def home(request):
     products = Product.objects.all()
-
+    products = [products[i:i+4] for i in range(0, len(products), 4)]
+    print(products)
     context = {'products': products}
-    return render(request, 'store/home.html')
+    return render(request, 'store/home.html', context)
 
 
 def register(request):

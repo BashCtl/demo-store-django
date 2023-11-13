@@ -18,11 +18,17 @@ class ProductCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class ProductInventory(models.Model):
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.quantity)
 
 
 class Product(models.Model):
@@ -36,3 +42,6 @@ class Product(models.Model):
         ProductCategory, on_delete=models.SET_NULL, null=True, related_name='products')
     inventory = models.OneToOneField(
         ProductInventory, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
