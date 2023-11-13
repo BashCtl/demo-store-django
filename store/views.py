@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User, Product
 from .forms import RegistrationForm
 import numpy as np
@@ -10,9 +11,18 @@ import numpy as np
 
 def home(request):
     products = Product.objects.all()
-    products = [products[i:i+4] for i in range(0, len(products), 4)]
-    print(products)
-    context = {'products': products}
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(products, 8)
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+    products_list = [products.object_list[i:i+4] for i in range(0, len(products), 4)]
+   
+    context = {'products': products, 'products_list': products_list}
     return render(request, 'store/home.html', context)
 
 

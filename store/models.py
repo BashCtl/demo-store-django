@@ -36,12 +36,13 @@ class Product(models.Model):
     description = models.CharField(max_length=1000)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='images', default='default.jpg')
+    badge = models.CharField(max_length=15, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(
         ProductCategory, on_delete=models.SET_NULL, null=True, related_name='products')
     inventory = models.OneToOneField(
-        ProductInventory, on_delete=models.CASCADE)
+        ProductInventory, on_delete=models.CASCADE, related_name='product')
 
     def __str__(self):
         return self.name
