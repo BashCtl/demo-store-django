@@ -2,27 +2,34 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import User, Product
+from .models import User, Product, ProductCategory
 from .forms import RegistrationForm
-import numpy as np
+from .utils import get_pagination, items_for_page
 
 # Create your views here.
 
 
 def home(request):
     products = Product.objects.all()
+    categories = ProductCategory.objects.all()
     page = request.GET.get('page', 1)
+    products_pagination = get_pagination(products, page)
+    products_list = items_for_page(products_pagination)
 
-    paginator = Paginator(products, 8)
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        products = paginator.page(1)
-    except EmptyPage:
-        products = paginator.page(paginator.num_pages)
-    products_list = [products.object_list[i:i+4] for i in range(0, len(products), 4)]
-   
-    context = {'products': products, 'products_list': products_list}
+    context = {'products': products_pagination, 'products_list': products_list,
+               'categories': categories}
+    return render(request, 'store/home.html', context)
+
+
+def category(request, name):
+    products = Product.objects.filter(category__name=name)
+    categories = ProductCategory.objects.all()
+    page = request.GET.get('page', 1)
+    products_pagination = get_pagination(products, page)
+    products_list = items_for_page(products_pagination)
+
+    context = {'products': products_pagination, 'products_list': products_list,
+               'categories': categories}
     return render(request, 'store/home.html', context)
 
 
