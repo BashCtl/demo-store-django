@@ -77,10 +77,10 @@
                 </a>
               </div>
               <div class="card-body">
-                <a href="" class="text-reset">
+                <a href="{% url 'product' product.id %}" class="text-reset">
                   <h5 class="card-title mb-2">{{ product.name }}</h5>
                 </a>
-                <a href="" class="text-reset ">
+                <a href="{% url 'category' product.category.name %}" class="text-reset ">
                   <p>{{ product.category }}</p>
                 </a>
                 <h6 class="mb-3 price">{{ product.price }}$</h6>

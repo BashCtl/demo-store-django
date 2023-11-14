@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -32,6 +32,11 @@ def category(request, name):
                'categories': categories}
     return render(request, 'store/home.html', context)
 
+def product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    context = {'product': product}
+    return render(request, 'store/product.html', context)
 
 def register(request):
     form = RegistrationForm()
