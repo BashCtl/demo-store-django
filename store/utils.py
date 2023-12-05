@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .models import Cart
 
 def get_pagination(item_list, page):
     paginator = Paginator(item_list, 8)
@@ -12,3 +13,14 @@ def get_pagination(item_list, page):
 
 def items_for_page(pagination):
     return [pagination.object_list[i:i+4] for i in range(0, len(pagination.object_list), 4)]
+
+def get_cart_data(request):
+
+    if request.user.is_authenticated:
+        user = request.user
+        cart, created = Cart.objects.get_or_create(user=user, complete=False)
+        items = cart.items
+        print(cart.items)
+        print(cart.get_total)
+        return {'items': items}
+    return {}

@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import User, Product, ProductCategory
+from django.http import JsonResponse
+import json
+
+
+from .models import User, Product, ProductCategory, CartItem, Cart
 from .forms import RegistrationForm
-from .utils import get_pagination, items_for_page
+from .utils import get_pagination, items_for_page, get_cart_data
 
 # Create your views here.
 
@@ -15,6 +19,7 @@ def home(request):
     page = request.GET.get('page', 1)
     products_pagination = get_pagination(products, page)
     products_list = items_for_page(products_pagination)
+    data = get_cart_data(request)
 
     context = {'products': products_pagination, 'products_list': products_list,
                'categories': categories}
@@ -32,11 +37,27 @@ def category(request, name):
                'categories': categories}
     return render(request, 'store/home.html', context)
 
+
+@login_required
 def product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-
+    data = get_cart_data(request)
     context = {'product': product}
     return render(request, 'store/product.html', context)
+
+def update_item(request):
+    data = json.loads(request.body)
+    product_id = data['productId']
+    quantity = int(data['quantity'])
+
+    user = request.user
+    product = Product.objects.get(id=product_id)
+    cart, created = Cart.objects.get_or_create(user=user, complete=False)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item.quantity = quantity
+    print(cart_item)
+
+    return JsonResponse('Item was added.', safe=False)
 
 def register(request):
     form = RegistrationForm()
