@@ -20,9 +20,10 @@ def home(request):
     products_pagination = get_pagination(products, page)
     products_list = items_for_page(products_pagination)
     data = get_cart_data(request)
+    cart_items = data['cart_items']
 
     context = {'products': products_pagination, 'products_list': products_list,
-               'categories': categories}
+               'categories': categories, 'cart_items': cart_items}
     return render(request, 'store/home.html', context)
 
 
@@ -33,17 +34,24 @@ def category(request, name):
     products_pagination = get_pagination(products, page)
     products_list = items_for_page(products_pagination)
 
+    data = get_cart_data(request)
+    cart_items = data['cart_items']
+
     context = {'products': products_pagination, 'products_list': products_list,
-               'categories': categories}
+               'categories': categories, 'cart_items': cart_items}
     return render(request, 'store/home.html', context)
 
 
 @login_required
 def product(request, pk):
     product = get_object_or_404(Product, pk=pk)
+
     data = get_cart_data(request)
-    context = {'product': product}
+    cart_items = data['cart_items']
+
+    context = {'product': product, 'cart_items': cart_items}
     return render(request, 'store/product.html', context)
+
 
 def update_item(request):
     data = json.loads(request.body)
@@ -53,11 +61,27 @@ def update_item(request):
     user = request.user
     product = Product.objects.get(id=product_id)
     cart, created = Cart.objects.get_or_create(user=user, complete=False)
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    cart_item.quantity = quantity
-    print(cart_item)
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, product=product)
+    cart_item.quantity += quantity
+
+    cart_item.save()
+
+    if cart_item.quantity <= 0:
+        cart_item.delete()
 
     return JsonResponse('Item was added.', safe=False)
+
+
+def cart(request):
+    data = get_cart_data(request)
+    cart = data['cart']
+    items = data['items']
+    cart_items = data['cart_items']
+
+    context = {'items': items, 'cart': cart, 'cart_items': cart_items}
+    return render(request, 'store/cart.html', context)
+
 
 def register(request):
     form = RegistrationForm()
