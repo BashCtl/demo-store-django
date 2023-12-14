@@ -21,7 +21,5 @@ def get_cart_data(request):
         cart, created = Cart.objects.get_or_create(user=user, complete=False)
         items = cart.items.all()
         cart_items = cart.get_cart_items
-        print(cart_items)
-        print(cart.get_total)
         return {'items': items, 'cart_items': cart_items, 'cart': cart}
     return {}

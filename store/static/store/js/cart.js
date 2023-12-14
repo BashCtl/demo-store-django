@@ -1,35 +1,15 @@
-let addBtn = document.getElementById("add-cart");
-document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+import { updateUserOrder } from "./cart_navbar.js";
 
-if (addBtn !== null) {
-  addBtn.addEventListener("click", function () {
+let removeItemBtns = document.getElementsByClassName("remove-item");
+
+for (let btn of removeItemBtns) {
+  btn.addEventListener("click", function () {
     let productId = this.dataset.product;
     console.log("productId", productId);
 
     console.log("USER:", user);
 
-    let quantity = document.getElementById("product-quantity").value;
+    let quantity = 0;
     updateUserOrder(productId, quantity);
   });
-}
-
-
-function updateUserOrder(productId, quantity) {
-  console.log("Sending data...");
-  let url = "/update-item/";
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify({ productId: productId, quantity: quantity }),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      location.reload();
-    });
 }
