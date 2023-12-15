@@ -90,6 +90,16 @@ def cart(request):
     return render(request, 'store/cart.html', context)
 
 
+def checkout(request):
+    data = get_cart_data(request)
+    cart = data['cart']
+    items = data['items']
+    cart_items = data['cart_items']
+
+    context = {'items': items, 'cart': cart, 'cart_items': cart_items}
+    return render(request, 'store/checkout.html', context)
+
+
 def register(request):
     form = RegistrationForm()
     if request.method == 'POST':
