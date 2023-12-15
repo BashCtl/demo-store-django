@@ -45,7 +45,7 @@
   
         let cart = JSON.parse(getCookie('cart'));
   
-        if (cart == undefined) {
+        if (cart === undefined) {
             cart = {};
             document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
         }
@@ -76,6 +76,6 @@
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/ae015fede3.js" crossorigin="anonymous"></script>
-    <script src="{% static 'store/js/cart_navbar.js' %}" type="module"></script>
+    <script src="{% static 'store/js/cart.js' %}" type="module"></script>
 </body>
 </html>

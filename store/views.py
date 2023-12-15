@@ -67,10 +67,17 @@ def update_item(request):
 
     cart_item.save()
 
-    if quantity <= 0:
+    if cart_item.quantity <= 0:
         cart_item.delete()
 
     return JsonResponse('Item was updated.', safe=False)
+
+
+def delete_item(request, id):
+    product = get_object_or_404(Product, id=id)
+    cart_item = get_object_or_404(CartItem, product=product)
+    cart_item.delete()
+    return JsonResponse('Item was deleted.', safe=False)
 
 
 def cart(request):
