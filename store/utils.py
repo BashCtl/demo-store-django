@@ -22,4 +22,4 @@ def get_cart_data(request):
         items = cart.items.all()
         cart_items = cart.get_cart_items
         return {'items': items, 'cart_items': cart_items, 'cart': cart}
-    return {}
+    return {'items': {}, 'cart_items': 0, 'cart': {}}

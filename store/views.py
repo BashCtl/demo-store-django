@@ -6,7 +6,7 @@ from django.http import JsonResponse
 import json
 
 
-from .models import User, Product, ProductCategory, CartItem, Cart
+from .models import User, Product, ProductCategory, CartItem, Cart, BillingAddress
 from .forms import RegistrationForm
 from .utils import get_pagination, items_for_page, get_cart_data
 
@@ -79,7 +79,7 @@ def delete_item(request, id):
     cart_item.delete()
     return JsonResponse('Item was deleted.', safe=False)
 
-
+@login_required
 def cart(request):
     data = get_cart_data(request)
     cart = data['cart']
@@ -89,12 +89,14 @@ def cart(request):
     context = {'items': items, 'cart': cart, 'cart_items': cart_items}
     return render(request, 'store/cart.html', context)
 
-
+@login_required
 def checkout(request):
     data = get_cart_data(request)
     cart = data['cart']
     items = data['items']
     cart_items = data['cart_items']
+    # if request.method == 'POST':
+
 
     context = {'items': items, 'cart': cart, 'cart_items': cart_items}
     return render(request, 'store/checkout.html', context)
@@ -140,7 +142,7 @@ def user_login(request):
             messages.error(request, 'Wrong credentials.')
     return render(request, 'store/login.html')
 
-
+@login_required
 def user_logout(request):
     logout(request)
     messages.success(request, 'You Have Been Logged Out.')

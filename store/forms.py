@@ -23,3 +23,4 @@ class RegistrationForm(UserCreationForm):
 
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
+

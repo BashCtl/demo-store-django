@@ -50,7 +50,8 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
     complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -80,3 +81,18 @@ class CartItem(models.Model):
 
     def __str__(self) -> str:
         return f"{self.product.name}: {self.quantity}"
+
+
+class BillingAddress(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=100)
+    address = models.CharField(max_length=250)
+    country = models.CharField(max_length=50)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20)
+    cart = models.OneToOneField(
+        Cart, on_delete=models.CASCADE, primary_key=True)
+    
+    def __str__(self):
+        return f"first_name={self.first_name}, last_name={self.last_name}, cart={self.cart}"
