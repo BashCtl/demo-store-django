@@ -79,6 +79,7 @@ def delete_item(request, id):
     cart_item.delete()
     return JsonResponse('Item was deleted.', safe=False)
 
+
 @login_required
 def cart(request):
     data = get_cart_data(request)
@@ -89,16 +90,40 @@ def cart(request):
     context = {'items': items, 'cart': cart, 'cart_items': cart_items}
     return render(request, 'store/cart.html', context)
 
+
 @login_required
 def checkout(request):
     data = get_cart_data(request)
     cart = data['cart']
     items = data['items']
     cart_items = data['cart_items']
-    # if request.method == 'POST':
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email').lower()
+        address = request.POST.get('address')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+        address = BillingAddress.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            address=address,
+            country=country,
+            state=state,
+            zip_code=zip_code,
+            cart=cart
+        )
+        print(address.cart)
+        cart.complete = True
+        cart.save()
+        cart_total = address.cart.get_total
+        context = {'cart_total': cart_total, 'address': address}
+        return render(request, 'store/thanks_order.html', context)
 
-
-    context = {'items': items, 'cart': cart, 'cart_items': cart_items}
+    context = {'items': items, 'cart': cart,
+               'cart_items': cart_items}
     return render(request, 'store/checkout.html', context)
 
 
@@ -141,6 +166,7 @@ def user_login(request):
         else:
             messages.error(request, 'Wrong credentials.')
     return render(request, 'store/login.html')
+
 
 @login_required
 def user_logout(request):

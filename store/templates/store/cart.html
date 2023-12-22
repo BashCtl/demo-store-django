@@ -117,7 +117,7 @@ Cart Items
                 </li>
               </ul>
   
-              <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">
+              <a href="{% if cart.get_total > 0 %}{% url 'checkout' %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-primary btn-lg btn-block">
                 Go to checkout
               </a>
             </div>

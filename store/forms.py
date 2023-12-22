@@ -1,5 +1,3 @@
-from typing import Any
-from django.forms import ModelForm
 from .models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -23,4 +21,5 @@ class RegistrationForm(UserCreationForm):
 
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
+
 
